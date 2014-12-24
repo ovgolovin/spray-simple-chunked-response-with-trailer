@@ -1,5 +1,5 @@
 import akka.actor.{Actor, ActorSystem, Props}
-import akka.io.IO
+import akka.io.{Tcp, IO}
 import akka.util.Timeout
 import spray.can.Http
 import spray.http.HttpMethods._
@@ -65,5 +65,8 @@ class RequestHandler extends Actor {
     }
 
     case _: HttpRequest => sender ! HttpResponse(status = 404, entity = "Unknown resource!\n")
+
+    case m: Tcp.ConnectionClosed =>
+      context.stop(self)
   }
 }
